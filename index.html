@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <title>EduPlanner Pro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <h2 id="login-header">Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <button id="login-btn">Login</button>
+        <div id="login-error"></div>
+        <p id="message"></p>
+        <button id="show-register-btn">Register</button>
+
+        <!-- Add the logo below the login block -->
+        <div>
+            <img id="schoolLogoLogin" src="Haynes_Academy_Logo.jpg" alt="School Logo">
+        </div>
+    </div>
+
+    <!-- Registration Screen -->
+    <div id="register-screen" style="display: none;">
+        <h2>Register</h2>
+        <input type="email" id="register-email" placeholder="Email">
+        <input type="password" id="register-password" placeholder="Password">
+        <button id="register-btn">Register</button>
+        <div id="register-error"></div>
+        <p id="message"></p>
+        <button id="show-login-btn">Login</button>
+    </div>
+    
+    <!-- Notification -->
+    <div id="notification" style="display:none;"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <h1>EduPlanner Pro</h1>
+
+        <!-- Legend Section -->
+        <div class="legend">
+            <h2>Legend:</h2>
+            <ul>
+                <li><strong>Homework Task Popup:</strong> Beige background</li>
+                <li><strong>Project Task Popup:</strong> Light Blue background</li>
+                <li><strong>Exam Task Popup:</strong> Pink background</li>
+                <li><strong>Blue Dot: </strong>Math</li>
+                <li><strong>Green Dot: </strong>Science</li>
+                <li><strong>Orange Dot: </strong>Social Studies</li>
+                <li><strong>Red Dot: </strong>ELA</li>
+                <li><strong>Instructions:</strong> Use the form to add tasks, view them in the calendar, and click on a task to see details and delete it when completed.</li>
+            </ul>
+            <img id="schoolLogoMain" src="Haynes_Academy_Logo.jpg" alt="School Logo">
+        </div>
+
+        <!-- Task Form -->
+        <form id="task-form">
+            <label for="task-name">Task Name:</label>
+            <input type="text" id="task-name" placeholder="Enter task name" required>
+            
+            <label for="subject">Subject:</label>
+            <select id="subject" required>
+                <option value="Math">Math</option>
+                <option value="Science">Science</option>
+                <option value="SS">Social Studies</option>
+                <option value="ELA">English Language Arts</option>
+            </select>
+
+            <label for="task-desc">Description:</label>
+            <textarea id="task-desc" placeholder="Enter task description..." required></textarea>
+            
+            <label for="due-date">Due Date:</label>
+            <input type="datetime-local" id="due-date" required>
+
+            <label for="task-type">Task Type:</label>
+            <select id="task-type" required>
+                <option value="homework">Homework</option>
+                <option value="project">Project</option>
+                <option value="exam">Exam</option>
+            </select>
+
+            <label for="reminder-interval">Reminder Interval:</label>
+            <select id="reminder-interval" required>
+                <option value="3600000">1 hour</option>
+                <option value="1800000">30 minutes</option>
+                <option value="900000">15 minutes</option>
+                <option value="600000">10 minutes</option>
+                <option value="300000">5 minutes</option>
+            </select>
+            
+            <label for="group-members">Group Members (comma-separated emails):</label>
+            <input type="email" id="group-members" placeholder="Enter emails" multiple>
+            
+            <!-- Button Container -->
+            <div class="button-container">
+                <button type="submit">Add Task</button>
+                <input type="file" id="import-tasks" accept=".json">
+                <button type="button" id="export-tasks">Export Tasks</button>
+                <button type="button" id="print-schedule">Print Schedule</button>
+                <button type="button" id="saveButton">Save</button>
+                <button id="logout-button">Log Out</button>
+            </div>
+        </form>
+        <div id="message"></div>
+        <div id="task-counters">
+            <p>Tasks on Calendar: <span id="tasks-on-calendar">0</span></p>
+            <p>Tasks Completed: <span id="tasks-completed">0</span></p>
+        </div>
+        <div id="calendar"></div>
+        <div class="button-container">
+            <button id="dark-theme-toggle">Toggle Dark Theme</button>
+        </div>
+    </div>
+
+    <!-- Modal for Task Details -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-task-name"></h2>
+            <p><strong>Subject:</strong> <span id="modal-task-subject"></span></p>
+            <p><strong>Time Remaining:</strong> <span id="modal-task-due-date"></span></p>
+            <p><strong>Type:</strong> <span id="modal-task-type"></span></p>
+            <p><strong>Description:</strong> <span id="modal-task-desc"></span></p>
+            <p><strong>Group Members:</strong> <span id="modal-task-group-members"></span></p>
+            <p><strong>Resources:</strong></p>
+            <ul id="modal-task-resources"></ul>
+            <button id="delete-task">Delete Task</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
